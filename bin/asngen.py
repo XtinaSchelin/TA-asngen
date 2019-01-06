@@ -40,6 +40,7 @@ class ASNGenCommand(GeneratingCommand):
             urllib2.install_opener(opener)
 
         # Attempt to retrieve the file.
+        # TODO: Change this to a Splunk setting, so changing it isn't as much of a hassle.
         try:
             url = urllib2.urlopen("https://geolite.maxmind.com/download/geoip/database/GeoLite2-ASN-CSV.zip")
         except Exception as ex:
