@@ -15,4 +15,11 @@
 			<type>text</type>
 		</input>
 	</block>
+	<block title="ZIP Source" endpoint="configs/conf-asngen" entity="proxies">
+		<text>The current URL for the free ASN ZIP file, found at dev.maxmind.com.</text>
+		<input field="zipurl">
+			<label>ZIP URL:</label>
+			<type>text</type>
+		</input>
+	</block>
 </setup>

@@ -17,32 +17,29 @@ class ASNGenCommand(GeneratingCommand):
 
     def generate(self):
         proxies = {'http': None, 'https': None}
+        source_url = ""
 
-        # Retrieve proxy settings, or skip.
-        try:
-            configparser = ConfigParser.ConfigParser()
-            configparser.read(os.path.join(os.environ['SPLUNK_HOME'], 'etc/apps/TA-asngen/local/asngen.conf'))
+        # Retrieve settings.
+        configparser = ConfigParser.ConfigParser()
+        configparser.read(os.path.join(os.environ['SPLUNK_HOME'], 'etc/apps/TA-asngen/local/asngen.conf'))
 
-            if configparser.has_section('proxies'):
-                if configparser.has_option('proxies', 'http'):
-                    if len(configparser.get('proxies', 'http')) > 0:
-                        proxies['http'] = configparser.get('proxies', 'http')
-                if configparser.has_option('proxies', 'https'):
-                    if len(configparser.get('proxies', 'https')) > 0:
-                        proxies['https'] = configparser.get('proxies', 'https')
-
-        except:
-            pass
+        if configparser.has_option('proxies', 'http'):
+            if len(configparser.get('proxies', 'http')) > 0:
+                proxies['http'] = configparser.get('proxies', 'http')
+        if configparser.has_option('proxies', 'https'):
+            if len(configparser.get('proxies', 'https')) > 0:
+                proxies['https'] = configparser.get('proxies', 'https')
 
         if proxies['http'] is not None or proxies['https'] is not None:
             proxy = urllib2.ProxyHandler(proxies)
             opener = urllib2.build_opener(proxy)
             urllib2.install_opener(opener)
 
+        source_url = configparser.get('proxies', 'zipurl')
+
         # Attempt to retrieve the file.
-        # TODO: Change this to a Splunk setting, so changing it isn't as much of a hassle.
         try:
-            url = urllib2.urlopen("https://geolite.maxmind.com/download/geoip/database/GeoLite2-ASN-CSV.zip")
+            url = urllib2.urlopen(source_url)
         except Exception as ex:
             raise Exception(ex)
 
